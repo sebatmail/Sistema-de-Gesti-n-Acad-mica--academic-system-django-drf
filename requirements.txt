@@ -1,8 +1,0 @@
-# Dependencias del Proyecto: Sistema de Gestión Académica
-# Evaluación N°1 - Desarrollo Backend con Django & DRF
-
-Django>=6.0,<7.0
-djangorestframework>=3.15.0
-sqlparse>=0.5.0
-asgiref>=3.9.0
-tzdata>=2025.1
