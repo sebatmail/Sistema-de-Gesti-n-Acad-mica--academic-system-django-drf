@@ -1,11 +1,11 @@
-# Sistema de Gestión Académica - Evaluación N°1 (Backend con Django & DRF)
+﻿# Sistema de Gestión Académica - Evaluación N°1 (Backend con Django & DRF)
 
 ![Django](https://img.shields.io/badge/Django-6.1-green.svg)
 ![DRF](https://img.shields.io/badge/Django_REST_Framework-3.18-red.svg)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)
 ![Python](https://img.shields.io/badge/Python-3.13-blue.svg)
 ![Tests](https://img.shields.io/badge/Tests-16%20Passed-brightgreen.svg)
-![Status](https://img.shields.io/badge/Calificaci%C3%B3n-32%2F32%20pts%20(100%25)-success.svg)
+![Evaluación](https://img.shields.io/badge/Evaluaci%C3%B3n-EVA%201%20Backend-blue.svg)
 
 **Asignatura:** Desarrollo Backend  
 **Docente:** Marcelo Alvarado  
@@ -272,7 +272,7 @@ Abrir el navegador web en: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
 ---
 
-## 8. Matriz de Cumplimiento de la Rúbrica (32/32 pts)
+## 8. Matriz de Criterios de Evaluación y Entregables (Pauta del Docente)
 
 | N° | Criterio de Evaluación | Indicador de Logro | Pje. Máx | Implementación Concreta en el Código |
 | :---: | :--- | :--- | :---: | :--- |
@@ -286,7 +286,7 @@ Abrir el navegador web en: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 | **8** | Implementa una aplicación sencilla en Django. | Evidencia el uso eficaz de herramientas de IA para frontend (Bootstrap) y datos JSON mediante el archivo de prompts. | **3 pts** | Archivos `prompts & skills.md` y `prompts.md` con los prompts exactos utilizados, respuestas obtenidas y justificación técnica. |
 | **9** | Subir el proyecto a GITHUB full comentado. | Crea un repositorio en Github para alojar su proyecto (comparte el link en el AAI). Full comentado. | **2 pts** | Cada archivo de código Python, HTML y JavaScript cuenta con comentarios detallados y explicaciones didácticas. Se incluye `.gitignore` y guía de comandos Git. |
 | **10** | Preguntas sobre elementos del proyecto y backend. | El alumno responde clara y puntualmente a lo que se le pregunta, evidencia claramente manejo de su proyecto. | **6 pts** | Balotario de 4 preguntas de defensa técnica con respuestas completas incluido en la Sección 10 de este README. |
-| **TOTAL** | | | **32 pts** | **Logrado Exitosamente (Calificación Máxima)** |
+| **TOTAL** | | | **32 pts** | Implementación completa de requerimientos | *(A evaluar por docente)* |
 
 ---
 
@@ -360,3 +360,4 @@ git push -u origin main
 > "El soporte dual se diseñó para cumplir estrictamente con el **Indicador 2 de la rúbrica**, el cual evalúa estructurar variables y colecciones para simular o procesar datos JSON sin requerir obligatoriamente la base de datos.
 > 
 > Para lograrlo, creamos el módulo `academic/data_manager.py` que lee `academic_data.json` y expone listas y diccionarios en memoria. En `views.py`, los endpoints `APIView` verifican si la base de datos relacional SQLite contiene datos; si no existen registros o si se invoca con `?source=json`, la API procesa y retorna las colecciones en memoria con los mismos serializadores. Adicionalmente, creamos el comando `python manage.py seed_data` que traslada esos datos a la base de datos SQLite con una sola instrucción."
+

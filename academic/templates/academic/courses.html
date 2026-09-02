@@ -1,0 +1,383 @@
+{% extends "academic/base.html" %}
+
+{% block title %}Asignaturas y Cursos{% endblock %}
+
+{% block content %}
+<!--
+    Plantilla: courses.html
+    Evaluación N°1: Desarrollo Backend con Django & DRF
+    Docente: Marcelo Alvarado
+    
+    Cumplimiento Criterio 3, 4 y 7:
+    - Renderizada por views.courses_view sin errores
+    - Consume asíncronamente /api/courses/ mediante JavaScript fetch()
+    - Enmascara la API REST de DRF presentando una tabla moderna con Bootstrap
+-->
+
+<div class="row mb-4 align-items-center">
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-journal-text text-primary me-2"></i>Catálogo de Asignaturas
+        </h2>
+        <p class="text-muted mb-0">
+            Listado dinámico de asignaturas académicas y sus docentes titulares asignados.
+        </p>
+    </div>
+    <div class="col-md-5 text-md-end mt-3 mt-md-0">
+        <button id="btn-reload" class="btn btn-outline-primary btn-sm me-2 shadow-sm">
+            <i class="bi bi-arrow-clockwise me-1"></i> Recargar Datos
+        </button>
+        <button class="btn btn-success btn-sm shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#addCourseModal" id="btn-open-course-modal">
+            <i class="bi bi-journal-plus me-1"></i> + Nueva Asignatura
+        </button>
+        <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill shadow-sm" id="badge-counter">
+            <i class="bi bi-book-half me-1"></i> Cursos: <span id="courses-count">0</span>
+        </span>
+    </div>
+</div>
+
+<!-- Modal para Registrar Nueva Asignatura con fetch() POST -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addCourseModalLabel">
+                    <i class="bi bi-journal-plus me-2"></i>Registrar Nueva Asignatura
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="form-add-course">
+                <div class="modal-body">
+                    <div id="modal-course-error" class="alert alert-danger d-none small"></div>
+                    <div class="mb-3">
+                        <label for="modal-course-name" class="form-label fw-semibold">Nombre de la Asignatura</label>
+                        <input type="text" class="form-control" id="modal-course-name" placeholder="Ej: Seguridad y Ciberseguridad Backend" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal-course-teacher" class="form-label fw-semibold">Profesor Asignado</label>
+                        <select class="form-select" id="modal-course-teacher" required>
+                            <option value="">Cargando lista de docentes...</option>
+                        </select>
+                        <small class="text-muted">Docentes consultados dinámicamente desde <code>/api/teachers/</code></small>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success btn-sm" id="btn-submit-course">
+                        <i class="bi bi-check2-circle me-1"></i> Guardar Asignatura
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tarjeta Principal con la Tabla de Cursos -->
+<div class="card card-custom shadow-sm">
+    <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-dark badge-source" id="data-source-badge">
+                Fuente: Consultando API...
+            </span>
+            <span class="text-muted small">| Endpoint: <code>/api/courses/</code></span>
+        </div>
+        <div class="small text-muted d-none d-sm-block">
+            <i class="bi bi-lightning-charge-fill text-warning"></i> Carga Asíncrona con fetch()
+        </div>
+    </div>
+    
+    <div class="card-body p-0">
+        <!-- Indicador de Carga (Spinner) -->
+        <div id="loading-spinner" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Cargando cursos...</span>
+            </div>
+            <p class="mt-3 text-muted fw-semibold">Consultando endpoint REST de cursos de forma asíncrona...</p>
+        </div>
+
+        <!-- Mensaje de Error (en caso de fallo en la petición HTTP) -->
+        <div id="error-box" class="alert alert-danger m-4 d-none shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-danger"></i>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Error al consultar el endpoint /api/courses/</h6>
+                    <p class="mb-0 small" id="error-message">No se pudo establecer comunicación con el servidor backend.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje de Tabla Vacía -->
+        <div id="empty-box" class="alert alert-info m-4 d-none text-center py-4" role="alert">
+            <i class="bi bi-info-circle fs-3 text-info"></i>
+            <h6 class="fw-bold mt-2">No se encontraron asignaturas</h6>
+            <p class="small text-muted mb-0">No hay cursos disponibles para mostrar en este momento.</p>
+        </div>
+
+        <!-- Tabla Dinámica Renderizada por JavaScript -->
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0 d-none" id="courses-table">
+                <thead>
+                    <tr>
+                        <th class="ps-4" style="width: 80px;">ID</th>
+                        <th>Nombre de la Asignatura</th>
+                        <th>ID Docente</th>
+                        <th>Profesor Asignado</th>
+                        <th class="text-center" style="width: 140px;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="courses-table-body">
+                    <!-- Los elementos tr serán inyectados dinámicamente aquí por fetch() -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            <i class="bi bi-shield-check text-success me-1"></i>
+            Enmascaramiento activo: Los datos JSON se integran en el HTML sin recargar la página.
+        </small>
+        <span class="badge bg-secondary small" id="status-indicator">Listo</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /**
+     * SCRIPT ASÍNCRONO DE ENMASCARAMIENTO (JavaScript Vanilla + Fetch API)
+     * Evaluación N°1: Desarrollo Backend con Django & DRF
+     * Criterio 4: "Codifica peticiones fetch() en JavaScript dentro de las plantillas
+     * para consumir asíncronamente los datos de los endpoints."
+     * 
+     * Funcionamiento:
+     * 1. Se ejecuta automáticamente cuando el DOM está completamente cargado.
+     * 2. Realiza una solicitud HTTP GET asíncrona hacia '/api/courses/'.
+     * 3. Procesa el JSON retornado por el serializador CourseSerializer de DRF.
+     * 4. Itera sobre cada registro e inyecta dinámicamente las filas <tr> en el <tbody>.
+     * 5. Oculta el spinner de carga y gestiona estados de error si ocurren.
+     */
+
+    // Constante con la URL del endpoint REST a consumir
+    const COURSES_API_ENDPOINT = '/api/courses/';
+
+    // Referencias a los elementos del DOM
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const errorBox = document.getElementById('error-box');
+    const errorMessage = document.getElementById('error-message');
+    const emptyBox = document.getElementById('empty-box');
+    const coursesTable = document.getElementById('courses-table');
+    const coursesTableBody = document.getElementById('courses-table-body');
+    const coursesCount = document.getElementById('courses-count');
+    const dataSourceBadge = document.getElementById('data-source-badge');
+    const statusIndicator = document.getElementById('status-indicator');
+    const btnReload = document.getElementById('btn-reload');
+
+    /**
+     * Función asíncrona principal que consulta la API REST y dibuja la tabla
+     */
+    async function loadCoursesAsync() {
+        // Estado visual inicial: Mostrar spinner y ocultar tabla / alertas
+        loadingSpinner.classList.remove('d-none');
+        coursesTable.classList.add('d-none');
+        errorBox.classList.add('d-none');
+        emptyBox.classList.add('d-none');
+        statusIndicator.className = 'badge bg-warning text-dark small';
+        statusIndicator.innerText = 'Cargando...';
+
+        try {
+            console.log(`[EVA 1] Iniciando petición fetch() hacia: ${COURSES_API_ENDPOINT}`);
+            
+            // Ejecución de la petición asíncrona mediante fetch()
+            const response = await fetch(COURSES_API_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Verificación del estado HTTP de la respuesta
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+            }
+
+            // Deserialización del payload JSON
+            const dataPayload = await response.json();
+            console.log('[EVA 1] Datos recibidos del backend DRF:', dataPayload);
+
+            // Obtención de la lista de cursos (soporta formato con clave data o array directo)
+            const coursesList = dataPayload.data || dataPayload;
+            const sourceInfo = dataPayload.source || 'drf_api';
+
+            // Actualización de la insignia con la fuente de datos (SQLite o Memoria JSON)
+            if (sourceInfo === 'database_sqlite') {
+                dataSourceBadge.className = 'badge bg-success badge-source';
+                dataSourceBadge.innerHTML = '<i class="bi bi-database-check me-1"></i> Base de Datos: SQLite';
+            } else {
+                dataSourceBadge.className = 'badge bg-info text-dark badge-source';
+                dataSourceBadge.innerHTML = '<i class="bi bi-filetype-json me-1"></i> Fuente: JSON en Memoria';
+            }
+
+            // Validación de existencia de registros
+            if (!Array.isArray(coursesList) || coursesList.length === 0) {
+                loadingSpinner.classList.add('d-none');
+                emptyBox.classList.remove('d-none');
+                coursesCount.innerText = '0';
+                statusIndicator.className = 'badge bg-secondary small';
+                statusIndicator.innerText = 'Sin registros';
+                return;
+            }
+
+            // Limpieza previa del cuerpo de la tabla
+            coursesTableBody.innerHTML = '';
+
+            // Construcción dinámica de las filas de la tabla
+            coursesList.forEach((course) => {
+                const tr = document.createElement('tr');
+                
+                // Mapeo de campos acordes al modelo ER y serializador
+                const courseId = course.id;
+                const courseName = course.name;
+                const teacherId = course.teacher_id || 'N/A';
+                const teacherName = course.teacher_name || 'Sin docente asignado';
+
+                tr.innerHTML = `
+                    <td class="ps-4 fw-bold text-secondary">#${courseId}</td>
+                    <td>
+                        <div class="fw-semibold text-dark">${courseName}</div>
+                        <small class="text-muted">Asignatura Curricular</small>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-person-badge me-1"></i>ID ${teacherId}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2" style="width: 32px; height: 32px; font-size: 0.8rem; font-weight: 600;">
+                                ${teacherName.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="fw-medium text-dark">${teacherName}</div>
+                                <small class="text-muted">Profesor Titular</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge text-bg-success rounded-pill px-3 py-2">
+                            <i class="bi bi-check2-circle me-1"></i> Activa
+                        </span>
+                    </td>
+                `;
+                coursesTableBody.appendChild(tr);
+            });
+
+            // Actualización del contador y visibilidad
+            coursesCount.innerText = coursesList.length;
+            loadingSpinner.classList.add('d-none');
+            coursesTable.classList.remove('d-none');
+            statusIndicator.className = 'badge bg-success small';
+            statusIndicator.innerText = `${coursesList.length} cargados`;
+
+        } catch (error) {
+            console.error('[EVA 1] Error en loadCoursesAsync:', error);
+            loadingSpinner.classList.add('d-none');
+            coursesTable.classList.add('d-none');
+            errorBox.classList.remove('d-none');
+            errorMessage.innerText = error.message || 'Ocurrió un error inesperado al procesar los cursos.';
+            statusIndicator.className = 'badge bg-danger small';
+            statusIndicator.innerText = 'Error de conexión';
+        }
+    }
+
+    // Ejecución al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCoursesAsync();
+    });
+
+    // Evento de recarga manual
+    btnReload.addEventListener('click', () => {
+        loadCoursesAsync();
+    });
+
+    // Carga dinámica de docentes al abrir el modal de nueva asignatura
+    const selectTeacher = document.getElementById('modal-course-teacher');
+    const btnOpenCourseModal = document.getElementById('btn-open-course-modal');
+    const formAddCourse = document.getElementById('form-add-course');
+    const modalCourseError = document.getElementById('modal-course-error');
+    const btnSubmitCourse = document.getElementById('btn-submit-course');
+
+    btnOpenCourseModal.addEventListener('click', async () => {
+        modalCourseError.classList.add('d-none');
+        try {
+            const res = await fetch('/api/teachers/');
+            const payload = await res.json();
+            const teachers = payload.data || payload;
+            selectTeacher.innerHTML = '<option value="">-- Seleccione un Docente Titular --</option>';
+            teachers.forEach((t) => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = `${t.full_name || (t.first_name + ' ' + t.last_name)} (ID #${t.id})`;
+                selectTeacher.appendChild(opt);
+            });
+        } catch (err) {
+            selectTeacher.innerHTML = '<option value="">Error al cargar docentes</option>';
+        }
+    });
+
+    // Envío del formulario de nueva asignatura vía fetch() POST
+    formAddCourse.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const courseName = document.getElementById('modal-course-name').value.trim();
+        const teacherId = selectTeacher.value;
+
+        if (!courseName || !teacherId) {
+            modalCourseError.innerText = 'Por favor ingrese el nombre del curso y seleccione un docente.';
+            modalCourseError.classList.remove('d-none');
+            return;
+        }
+
+        modalCourseError.classList.add('d-none');
+        btnSubmitCourse.disabled = true;
+        btnSubmitCourse.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+        try {
+            const response = await fetch(COURSES_API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: courseName,
+                    teacher_id: parseInt(teacherId)
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Error al guardar la asignatura.');
+            }
+
+            // Cerrar modal y limpiar
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+            formAddCourse.reset();
+
+            // Recargar tabla de cursos
+            await loadCoursesAsync();
+
+        } catch (err) {
+            modalCourseError.innerText = err.message || 'Error al conectar con la API de cursos.';
+            modalCourseError.classList.remove('d-none');
+        } finally {
+            btnSubmitCourse.disabled = false;
+            btnSubmitCourse.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Guardar Asignatura';
+        }
+    });
+</script>
+{% endblock %}

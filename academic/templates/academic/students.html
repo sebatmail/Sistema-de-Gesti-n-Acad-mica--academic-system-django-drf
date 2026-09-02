@@ -1,0 +1,393 @@
+{% extends "academic/base.html" %}
+
+{% block title %}Listado de Estudiantes{% endblock %}
+
+{% block content %}
+<!--
+    Plantilla: students.html
+    Evaluación N°1: Desarrollo Backend con Django & DRF
+    Docente: Marcelo Alvarado
+    
+    Cumplimiento Criterio 3, 4 y 7:
+    - Renderizada por views.students_view sin errores
+    - Consume asíncronamente /api/students/ mediante JavaScript fetch()
+    - Enmascara la API REST de DRF presentando una tabla moderna con Bootstrap y buscador en tiempo real
+-->
+
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-people-fill text-info me-2"></i>Nómina de Estudiantes
+        </h2>
+        <p class="text-muted mb-0">
+            Registro oficial de estudiantes matriculados en la plataforma académica.
+        </p>
+    </div>
+    <div class="col-md-6 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end align-items-center gap-2">
+        <button id="btn-reload-students" class="btn btn-outline-info btn-sm shadow-sm">
+            <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+        </button>
+        <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+            <i class="bi bi-person-plus-fill me-1"></i> + Matricular Estudiante
+        </button>
+        <span class="badge bg-info text-dark fs-6 px-3 py-2 rounded-pill shadow-sm" id="badge-counter-students">
+            <i class="bi bi-person-check-fill me-1"></i> Total: <span id="students-count">0</span>
+        </span>
+    </div>
+</div>
+
+<!-- Modal para Agregar Estudiante con fetch() POST -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addStudentModalLabel">
+                    <i class="bi bi-person-plus-fill me-2"></i>Matricular Nuevo Estudiante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="form-add-student">
+                <div class="modal-body">
+                    <div id="modal-student-error" class="alert alert-danger d-none small"></div>
+                    <div class="mb-3">
+                        <label for="modal-student-firstname" class="form-label fw-semibold">Nombre(s) del Estudiante</label>
+                        <input type="text" class="form-control" id="modal-student-firstname" placeholder="Ej: Rodrigo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal-student-lastname" class="form-label fw-semibold">Apellido(s) del Estudiante</label>
+                        <input type="text" class="form-control" id="modal-student-lastname" placeholder="Ej: Tapia" required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="btn-submit-student">
+                        <i class="bi bi-check2-circle me-1"></i> Guardar y Matricular
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de Búsqueda / Filtro en tiempo real -->
+<div class="card card-custom mb-3 p-3 bg-white shadow-sm">
+    <div class="row g-2 align-items-center">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" id="search-student-input" class="form-control border-start-0" placeholder="Buscar por nombre, apellido o ID de estudiante...">
+            </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <span class="text-muted small">
+                <i class="bi bi-filter"></i> Filtrado dinámico en cliente (Vanilla JS)
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Tarjeta Principal con la Tabla de Estudiantes -->
+<div class="card card-custom shadow-sm">
+    <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-dark badge-source" id="data-source-badge-students">
+                Fuente: Consultando API...
+            </span>
+            <span class="text-muted small">| Endpoint: <code>/api/students/</code></span>
+        </div>
+        <div class="small text-muted d-none d-sm-block">
+            <i class="bi bi-lightning-charge-fill text-warning"></i> Carga Asíncrona con fetch()
+        </div>
+    </div>
+    
+    <div class="card-body p-0">
+        <!-- Indicador de Carga (Spinner) -->
+        <div id="loading-spinner-students" class="text-center py-5">
+            <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Cargando estudiantes...</span>
+            </div>
+            <p class="mt-3 text-muted fw-semibold">Consultando endpoint REST de estudiantes de forma asíncrona...</p>
+        </div>
+
+        <!-- Mensaje de Error (en caso de fallo en la petición HTTP) -->
+        <div id="error-box-students" class="alert alert-danger m-4 d-none shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-danger"></i>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Error al consultar el endpoint /api/students/</h6>
+                    <p class="mb-0 small" id="error-message-students">No se pudo establecer comunicación con el backend.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje de Tabla Vacía o Sin Coincidencias de Búsqueda -->
+        <div id="empty-box-students" class="alert alert-info m-4 d-none text-center py-4" role="alert">
+            <i class="bi bi-person-x fs-3 text-info"></i>
+            <h6 class="fw-bold mt-2">No se encontraron estudiantes</h6>
+            <p class="small text-muted mb-0" id="empty-message-text">No hay alumnos registrados en el sistema.</p>
+        </div>
+
+        <!-- Tabla Dinámica Renderizada por JavaScript -->
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0 d-none" id="students-table">
+                <thead>
+                    <tr>
+                        <th class="ps-4" style="width: 90px;">ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Nombre Completo</th>
+                        <th class="text-center" style="width: 140px;">Condición</th>
+                    </tr>
+                </thead>
+                <tbody id="students-table-body">
+                    <!-- Los elementos tr serán inyectados dinámicamente aquí por fetch() -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            <i class="bi bi-shield-check text-success me-1"></i>
+            Enmascaramiento activo: Consulta asíncrona JSON con renderizado en el cliente.
+        </small>
+        <span class="badge bg-secondary small" id="status-indicator-students">Listo</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /**
+     * SCRIPT ASÍNCRONO DE ENMASCARAMIENTO (JavaScript Vanilla + Fetch API)
+     * Evaluación N°1: Desarrollo Backend con Django & DRF
+     * Criterio 4: "Codifica peticiones fetch() en JavaScript dentro de las plantillas
+     * para consumir asíncronamente los datos de los endpoints."
+     * 
+     * Funcionamiento:
+     * 1. Consulta asíncronamente '/api/students/'.
+     * 2. Recibe el arreglo JSON serializado con StudentSerializer de DRF.
+     * 3. Permite búsqueda reactiva en tiempo real filtrando los datos en memoria del navegador.
+     * 4. Actualiza contadores y estados de la interfaz de forma fluida y sin recargas.
+     */
+
+    const STUDENTS_API_ENDPOINT = '/api/students/';
+
+    // Referencias a elementos del DOM
+    const loadingSpinner = document.getElementById('loading-spinner-students');
+    const errorBox = document.getElementById('error-box-students');
+    const errorMessage = document.getElementById('error-message-students');
+    const emptyBox = document.getElementById('empty-box-students');
+    const emptyMessageText = document.getElementById('empty-message-text');
+    const studentsTable = document.getElementById('students-table');
+    const studentsTableBody = document.getElementById('students-table-body');
+    const studentsCount = document.getElementById('students-count');
+    const dataSourceBadge = document.getElementById('data-source-badge-students');
+    const statusIndicator = document.getElementById('status-indicator-students');
+    const searchInput = document.getElementById('search-student-input');
+    const btnReload = document.getElementById('btn-reload-students');
+
+    // Variable en memoria en el cliente para almacenar los estudiantes originales cargados
+    let cachedStudents = [];
+
+    /**
+     * Renderiza las filas en el <tbody> a partir de un arreglo de estudiantes
+     */
+    function renderStudentsRows(studentsList) {
+        studentsTableBody.innerHTML = '';
+
+        if (!studentsList || studentsList.length === 0) {
+            studentsTable.classList.add('d-none');
+            emptyBox.classList.remove('d-none');
+            emptyMessageText.innerText = 'No hay estudiantes que coincidan con el criterio de búsqueda.';
+            studentsCount.innerText = '0';
+            return;
+        }
+
+        emptyBox.classList.add('d-none');
+        studentsTable.classList.remove('d-none');
+
+        studentsList.forEach((student) => {
+            const tr = document.createElement('tr');
+            const studentId = student.id;
+            const firstName = student.first_name || '';
+            const lastName = student.last_name || '';
+            const fullName = student.full_name || `${firstName} ${lastName}`.trim();
+
+            tr.innerHTML = `
+                <td class="ps-4 fw-bold text-secondary">#${studentId}</td>
+                <td>
+                    <div class="fw-semibold text-dark">${firstName}</div>
+                </td>
+                <td>
+                    <div class="text-dark">${lastName}</div>
+                </td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-info text-dark d-flex justify-content-center align-items-center me-2 fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                            ${firstName.charAt(0)}${lastName.charAt(0)}
+                        </div>
+                        <span class="fw-medium">${fullName}</span>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2">
+                        <i class="bi bi-mortarboard me-1"></i> Matriculado
+                    </span>
+                </td>
+            `;
+            studentsTableBody.appendChild(tr);
+        });
+
+        studentsCount.innerText = studentsList.length;
+    }
+
+    /**
+     * Función asíncrona principal que consulta la API REST de estudiantes
+     */
+    async function loadStudentsAsync() {
+        loadingSpinner.classList.remove('d-none');
+        studentsTable.classList.add('d-none');
+        errorBox.classList.add('d-none');
+        emptyBox.classList.add('d-none');
+        statusIndicator.className = 'badge bg-warning text-dark small';
+        statusIndicator.innerText = 'Cargando...';
+
+        try {
+            console.log(`[EVA 1] Ejecutando fetch() asíncrono a: ${STUDENTS_API_ENDPOINT}`);
+            
+            const response = await fetch(STUDENTS_API_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+            }
+
+            const payload = await response.json();
+            console.log('[EVA 1] Datos de estudiantes recibidos:', payload);
+
+            cachedStudents = payload.data || payload;
+            const source = payload.source || 'drf_api';
+
+            // Actualización de badge con la fuente
+            if (source === 'database_sqlite') {
+                dataSourceBadge.className = 'badge bg-success badge-source';
+                dataSourceBadge.innerHTML = '<i class="bi bi-database-check me-1"></i> Base de Datos: SQLite';
+            } else {
+                dataSourceBadge.className = 'badge bg-info text-dark badge-source';
+                dataSourceBadge.innerHTML = '<i class="bi bi-filetype-json me-1"></i> Fuente: JSON en Memoria';
+            }
+
+            loadingSpinner.classList.add('d-none');
+            renderStudentsRows(cachedStudents);
+
+            statusIndicator.className = 'badge bg-success small';
+            statusIndicator.innerText = `${cachedStudents.length} cargados`;
+
+        } catch (err) {
+            console.error('[EVA 1] Error al cargar estudiantes:', err);
+            loadingSpinner.classList.add('d-none');
+            studentsTable.classList.add('d-none');
+            errorBox.classList.remove('d-none');
+            errorMessage.innerText = err.message || 'Error al conectar con /api/students/';
+            statusIndicator.className = 'badge bg-danger small';
+            statusIndicator.innerText = 'Error de conexión';
+        }
+    }
+
+    // Filtro reactivo en el cliente al escribir en el campo de búsqueda
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+            renderStudentsRows(cachedStudents);
+            return;
+        }
+
+        const filtered = cachedStudents.filter((student) => {
+            const idMatch = String(student.id).includes(query);
+            const firstNameMatch = (student.first_name || '').toLowerCase().includes(query);
+            const lastNameMatch = (student.last_name || '').toLowerCase().includes(query);
+            const fullNameMatch = (student.full_name || '').toLowerCase().includes(query);
+            return idMatch || firstNameMatch || lastNameMatch || fullNameMatch;
+        });
+
+        renderStudentsRows(filtered);
+    });
+
+    // Carga inicial
+    document.addEventListener('DOMContentLoaded', () => {
+        loadStudentsAsync();
+    });
+
+    // Recarga manual
+    btnReload.addEventListener('click', () => {
+        searchInput.value = '';
+        loadStudentsAsync();
+    });
+
+    // Envío del formulario para crear un nuevo estudiante vía fetch() POST
+    const formAddStudent = document.getElementById('form-add-student');
+    const modalStudentError = document.getElementById('modal-student-error');
+    const btnSubmitStudent = document.getElementById('btn-submit-student');
+
+    formAddStudent.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const firstName = document.getElementById('modal-student-firstname').value.trim();
+        const lastName = document.getElementById('modal-student-lastname').value.trim();
+
+        if (!firstName || !lastName) {
+            modalStudentError.innerText = 'Por favor complete todos los campos.';
+            modalStudentError.classList.remove('d-none');
+            return;
+        }
+
+        modalStudentError.classList.add('d-none');
+        btnSubmitStudent.disabled = true;
+        btnSubmitStudent.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+        try {
+            const response = await fetch(STUDENTS_API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Error al registrar el estudiante.');
+            }
+
+            // Cerrar modal y limpiar campos
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+            formAddStudent.reset();
+
+            // Recargar la tabla asíncronamente
+            await loadStudentsAsync();
+
+        } catch (err) {
+            modalStudentError.innerText = err.message || 'Error al conectar con la API.';
+            modalStudentError.classList.remove('d-none');
+        } finally {
+            btnSubmitStudent.disabled = false;
+            btnSubmitStudent.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Guardar y Matricular';
+        }
+    });
+</script>
+{% endblock %}

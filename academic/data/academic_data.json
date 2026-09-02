@@ -1,0 +1,153 @@
+{
+  "teachers": [
+    {
+      "id": 1,
+      "first_name": "Marcelo",
+      "last_name": "Alvarado"
+    },
+    {
+      "id": 2,
+      "first_name": "Carolina",
+      "last_name": "Herrera"
+    },
+    {
+      "id": 3,
+      "first_name": "Roberto",
+      "last_name": "Gómez"
+    },
+    {
+      "id": 4,
+      "first_name": "Andrea",
+      "last_name": "Valenzuela"
+    },
+    {
+      "id": 5,
+      "first_name": "Felipe",
+      "last_name": "Soto"
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "name": "Desarrollo Backend con Django & DRF",
+      "teacher_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Modelamiento y Arquitectura de Bases de Datos",
+      "teacher_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Arquitectura de Software y Microservicios",
+      "teacher_id": 3
+    },
+    {
+      "id": 4,
+      "name": "Inteligencia Artificial y Machine Learning Aplicado",
+      "teacher_id": 4
+    },
+    {
+      "id": 5,
+      "name": "Computación en la Nube y DevOps",
+      "teacher_id": 5
+    },
+    {
+      "id": 6,
+      "name": "Programación Avanzada y Algoritmos en Python",
+      "teacher_id": 1
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "first_name": "Sebastián",
+      "last_name": "Torres"
+    },
+    {
+      "id": 2,
+      "first_name": "Sofía",
+      "last_name": "Contreras"
+    },
+    {
+      "id": 3,
+      "first_name": "Benjamín",
+      "last_name": "Muñoz"
+    },
+    {
+      "id": 4,
+      "first_name": "Valentina",
+      "last_name": "Rojas"
+    },
+    {
+      "id": 5,
+      "first_name": "Lucas",
+      "last_name": "Morales"
+    },
+    {
+      "id": 6,
+      "first_name": "Camila",
+      "last_name": "Silva"
+    },
+    {
+      "id": 7,
+      "first_name": "Joaquín",
+      "last_name": "Castro"
+    },
+    {
+      "id": 8,
+      "first_name": "Martina",
+      "last_name": "Araya"
+    }
+  ],
+  "student_courses": [
+    {
+      "student_id": 1,
+      "course_id": 1
+    },
+    {
+      "student_id": 1,
+      "course_id": 3
+    },
+    {
+      "student_id": 2,
+      "course_id": 1
+    },
+    {
+      "student_id": 2,
+      "course_id": 4
+    },
+    {
+      "student_id": 3,
+      "course_id": 2
+    },
+    {
+      "student_id": 3,
+      "course_id": 5
+    },
+    {
+      "student_id": 4,
+      "course_id": 1
+    },
+    {
+      "student_id": 4,
+      "course_id": 6
+    },
+    {
+      "student_id": 5,
+      "course_id": 3
+    },
+    {
+      "student_id": 6,
+      "course_id": 4
+    },
+    {
+      "student_id": 7,
+      "course_id": 5
+    },
+    {
+      "student_id": 8,
+      "course_id": 1
+    }
+  ]
+}
