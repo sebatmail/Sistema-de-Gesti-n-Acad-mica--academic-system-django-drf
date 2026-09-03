@@ -19,7 +19,7 @@
 > ### 🎮 Plataforma Interactiva de Defensa Oral & Simulador (Criterio 10)
 > Para entrenar o evaluar en tiempo real las competencias técnicas del proyecto:
 > - **🖥️ En local:** Haz doble clic en el archivo [`guia_estudio_defensa.html`](./guia_estudio_defensa.html) para abrir el simulador en tu navegador.
-> - **🌐 Vista en vivo online:** Puedes abrirlo directamente en la web con [HTMLPreview](https://htmlpreview.github.io/?https://github.com/TU_USUARIO/Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf/blob/main/guia_estudio_defensa.html) o GitHub Pages sin necesidad de instalar nada.
+> - **🌐 Vista en vivo online:** Puedes abrirlo directamente en la web con [HTMLPreview]([https://htmlpreview.github.io/?https://github.com/TU_USUARIO/Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf/blob/main/guia_estudio_defensa.html](https://sebatmail.github.io/Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf/)) o GitHub Pages sin necesidad de instalar nada.
 > - **Contenido interactivo:** Infografía visual de arquitectura, temporizador de 60s, banco de 22 preguntas con respuestas modelo y 10 preguntas de carpetas con metáforas de la vida real.
 
 ---
