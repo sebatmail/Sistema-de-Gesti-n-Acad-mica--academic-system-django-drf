@@ -1,10 +1,10 @@
-﻿# Sistema de Gestión Académica - Evaluación N°1 (Backend con Django & DRF)
+# Sistema de Gestión Académica - Evaluación N°1 (Backend con Django & DRF)
 
 ![Django](https://img.shields.io/badge/Django-6.1-green.svg)
 ![DRF](https://img.shields.io/badge/Django_REST_Framework-3.18-red.svg)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)
 ![Python](https://img.shields.io/badge/Python-3.13-blue.svg)
-![Tests](https://img.shields.io/badge/Tests-16%20Passed-brightgreen.svg)
+![Tests](https://img.shields.io/badge/Tests-18%20Passed-brightgreen.svg)
 ![Evaluación](https://img.shields.io/badge/Evaluaci%C3%B3n-EVA%201%20Backend-blue.svg)
 
 **Asignatura:** Desarrollo Backend  
@@ -43,7 +43,7 @@ El **Sistema de Gestión Académica** es una solución desarrollada para satisfa
 
 Para el desarrollo de este proyecto se descargó e implementó el compendio completo de habilidades desde:
 - **Repositorio de Origen:** [https://github.com/garri333/Skills.git](https://github.com/garri333/Skills.git)
-- **Documento de detalle:** [`prompts & skills.md`](file:///c:/Users/laboratorio8/Desktop/EVA%201%20BACKEND/prompts%20&%20skills.md)
+- **Documento de detalle:** [`prompts & skills.md`](./prompts%20&%20skills.md)
 
 ### Resumen de Skills Clave Utilizadas:
 1. `03-backend-api/api-design`: Convenciones RESTful, códigos de respuesta HTTP, serializadores anidados y estructuración de respuestas JSON.
@@ -51,7 +51,7 @@ Para el desarrollo de este proyecto se descargó e implementó el compendio comp
 3. `13-anthropic/theme-factory`: Armonización cromática para un panel académico profesional.
 4. `04-ai-agents/coding-agent` & `prompt-engineering`: Diseño de prompts para generación de estructuras de datos y plantillas.
 5. `05-devops-git/git-conventional-commits`: Estructura semántica de commits y configuración de `.gitignore`.
-6. `19-testing-quality/code-quality-audit` & `systematic-debugging`: Código "full comentado" línea por línea y suite de 16 pruebas automatizadas.
+6. `19-testing-quality/code-quality-audit` & `systematic-debugging`: Código "full comentado" línea por línea y suite de 18 pruebas automatizadas.
 7. `21-productivity/codebase-health-reporter`: Documentación exhaustiva y trazabilidad de requerimientos.
 
 ---
@@ -141,49 +141,52 @@ sequenceDiagram
 ## 5. Estructura de Directorios
 
 ```text
-EVA 1 BACKEND/
-├── manage.py                          # Script principal de gestión de Django
-├── db.sqlite3                         # Base de datos relacional SQLite
-├── requirements.txt                   # Dependencias fijadas del proyecto
-├── README.md                          # Documentación completa y manual de uso
-├── prompts & skills.md                # Registro de skills, repo y prompts exactos
-├── prompts.md                         # Entregable de IA (Criterio 8 de la rúbrica)
-├── .gitignore                         # Reglas de exclusión para Git
+Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf-main/
 │
-├── academic_project/                  # Paquete de configuración del proyecto Django
-│   ├── __init__.py
-│   ├── settings.py                    # Configuración global (DRF, apps, plantillas)
-│   ├── urls.py                        # Rutas raíz y eliminación del error 404
-│   ├── asgi.py
-│   └── wsgi.py
-│
-├── academic/                          # Aplicación de dominio académico
-│   ├── __init__.py
-│   ├── admin.py                       # Configuración avanzada de Django Admin
-│   ├── apps.py                        # Definición de la aplicación
-│   ├── models.py                      # Modelos ER (Teacher, Course, Student, StudentCourse)
-│   ├── serializers.py                 # Serializadores de DRF (ModelSerializer)
-│   ├── views.py                       # Vistas HTML (render) y Endpoints APIView
-│   ├── urls.py                        # Mapeo de rutas web (/courses/) y API (/api/...)
-│   ├── tests.py                       # Suite de 16 pruebas unitarias e integración
-│   ├── data_manager.py                # Módulo de datos en memoria y precarga JSON
+├── academic/                          # Aplicación de dominio académico (Django App)
 │   ├── data/
-│   │   └── academic_data.json         # Datos simulados estructurados en JSON
+│   │   └── academic_data.json         # Dataset simulado estructurado en JSON (modo en memoria)
 │   ├── management/
 │   │   └── commands/
-│   │       └── seed_data.py           # Comando CLI: python manage.py seed_data
-│   └── templates/academic/            # Plantillas HTML de la aplicación
-│       ├── base.html
-│       ├── courses.html
-│       └── students.html
+│   │       ├── __init__.py
+│   │       └── seed_data.py           # Comando CLI personalizado: python manage.py seed_data
+│   ├── migrations/                    # Historial de migraciones del ORM
+│   │   ├── __init__.py
+│   │   └── 0001_initial.py            # Migración inicial de tablas del esquema ER
+│   ├── templates/academic/            # Plantillas HTML a nivel de aplicación
+│   │   ├── base.html                  # Layout base con navbar y Bootstrap 5.3 CDN
+│   │   ├── courses.html               # Listado de asignaturas con fetch asíncrono
+│   │   └── students.html              # Nómina de estudiantes con buscador en tiempo real
+│   ├── __init__.py
+│   ├── admin.py                       # Configuración y personalización en Django Admin
+│   ├── apps.py                        # Definición y metadatos de la aplicación
+│   ├── data_manager.py                # Módulo de gestión en memoria y carga desde JSON
+│   ├── models.py                      # Modelos del esquema ER (Teacher, Course, Student, StudentCourse)
+│   ├── serializers.py                 # Serializadores DRF (ModelSerializer con campos calculados)
+│   ├── tests.py                       # Suite de 18 pruebas automatizadas (unitarias e integración)
+│   ├── urls.py                        # Mapeo de rutas web (/courses/, /students/) y API (/api/...)
+│   └── views.py                       # Vistas HTML (render) y Endpoints API REST (APIView)
 │
-├── templates/academic/                # Plantillas globales sincronizadas
-│   ├── base.html                      # Layout base con Bootstrap 5.3 CDN
-│   ├── courses.html                   # Listado de cursos con fetch asíncrono
-│   └── students.html                  # Nómina de estudiantes con buscador en vivo
+├── academic_project/                  # Paquete de configuración central del proyecto Django
+│   ├── __init__.py
+│   ├── asgi.py                        # Configuración ASGI para servidores compatibles
+│   ├── settings.py                    # Configuración global (DRF, apps, BD, templates)
+│   ├── urls.py                        # Enrutador principal y redirección de ruta raíz '/'
+│   └── wsgi.py                        # Configuración WSGI para despliegue estándar
 │
-└── Skills_Repo/                       # Repositorio de habilidades descargado
-    └── Skills-master/                 # Catálogo de skills aplicadas en la EVA 1
+├── templates/                         # Directorio global de plantillas HTML
+│   └── academic/
+│       ├── base.html                  # Layout base compartido
+│       ├── courses.html               # Vista de cursos
+│       └── students.html              # Vista de estudiantes
+│
+├── db.sqlite3                         # Base de datos relacional SQLite preconfigurada
+├── manage.py                          # Script principal de administración de Django
+├── prompts & skills.md                # Registro de skills aplicadas, repo de origen y prompts
+├── prompts.md                         # Entregable de IA (Criterio 8 de la rúbrica)
+├── prompts.txt                        # Transcripción plana de los prompts utilizados
+├── README.md                          # Documentación técnica completa y manual de puesta en marcha
+└── requirements.txt                   # Dependencias fijadas del proyecto (Django, DRF)
 ```
 
 ---
@@ -191,27 +194,58 @@ EVA 1 BACKEND/
 ## 6. Instalación y Puesta en Marcha
 
 ### Paso 1: Clonar o posicionarse en el proyecto
-Abrir la terminal (PowerShell, Git Bash o CMD) en la carpeta del proyecto:
+
+Abrir la terminal (**PowerShell**, **Git Bash** o **CMD**) y situarse en la carpeta raíz del proyecto según cómo fue obtenido:
+
+#### Opción A: Si descargó el proyecto como carpeta o archivo ZIP (Recomendado)
+Al descomprimir el archivo de la evaluación o descargarlo desde GitHub:
 ```bash
-cd "c:\Users\laboratorio8\Desktop\EVA 1 BACKEND"
+# Navegar a la carpeta donde se encuentra el proyecto descargado:
+cd "Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf-main"
+
+# O mediante la ruta completa en Windows:
+# cd "C:\Users\<TuUsuario>\Desktop\Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf-main"
 ```
+
+#### Opción B: Si clona el repositorio directamente con Git
+```bash
+# 1. Clonar el repositorio remoto
+git clone https://github.com/TU_USUARIO/Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf.git
+
+# 2. Acceder al directorio clonado
+cd Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf
+```
+
+> [!TIP]
+> **Verificación previa:** Asegúrese de estar ubicado en el directorio raíz donde residen las carpetas `academic`, `academic_project`, `templates` y el archivo `manage.py` antes de ejecutar los siguientes pasos. Puede comprobarlo ejecutando `dir` (en Windows) o `ls` (en Git Bash / Linux).
 
 ### Paso 2: Crear y activar entorno virtual (Recomendado)
+Aislar las dependencias previene conflictos con otras versiones de paquetes instalados en el sistema:
 ```bash
+# Crear el entorno virtual
 python -m venv env
-# En Windows PowerShell:
+
+# Activar el entorno virtual:
+# En Windows (PowerShell):
 .\env\Scripts\Activate.ps1
-# O en CMD:
+
+# En Windows (CMD):
 .\env\Scripts\activate.bat
+
+# En macOS / Linux:
+source env/bin/activate
 ```
+*(Al activarse correctamente, verá el prefijo `(env)` al inicio de la línea de comandos).*
 
 ### Paso 3: Instalar dependencias
+Instalar las librerías necesarias especificadas en `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
 *(O directamente: `pip install django djangorestframework`)*
 
 ### Paso 4: Aplicar migraciones a la Base de Datos
+Generar y aplicar la estructura de tablas del modelo ER en SQLite:
 ```bash
 python manage.py makemigrations academic
 python manage.py migrate
@@ -231,21 +265,24 @@ Precarga exitosa:
  - 12 Inscripciones registradas
 ```
 
-### Paso 6: Ejecutar las pruebas unitarias
+### Paso 6: Ejecutar las pruebas unitarias e integración
+Verificar el correcto funcionamiento de toda la suite de pruebas automatizadas:
 ```bash
 python manage.py test
 ```
 *Salida esperada:*
 ```text
-Ran 16 tests in 0.032s
+Ran 18 tests in 0.052s
 OK
 ```
 
 ### Paso 7: Iniciar el servidor de desarrollo
+Iniciar el servidor web local de Django:
 ```bash
 python manage.py runserver
 ```
-Abrir el navegador web en: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
+Abrir el navegador web en: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**  
+*(El sistema redirigirá de inmediato a `/courses/`, presentando la interfaz completa).*
 
 ---
 
