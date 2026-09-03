@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Oral EVA 1 - Guía Táctica & Simulador de Examen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-accent: #0dcaf0;
+            --secondary-accent: #6f42c1;
+            --bg-card: #181c24;
+            --border-glow: rgba(13, 202, 240, 0.25);
+        }
+        body {
+            background-color: #0d1117;
+            color: #e6edf3;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            padding-bottom: 80px;
+        }
+        .hero-banner {
+            background: radial-gradient(circle at 50% 0%, rgba(111, 66, 193, 0.25), transparent 70%), #161b22;
+            border-bottom: 1px solid #30363d;
+            border-radius: 1rem;
+            padding: 2.2rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid #30363d;
+            border-radius: 0.85rem;
+            transition: all 0.25s ease-in-out;
+        }
+        .question-card:hover {
+            border-color: var(--primary-accent);
+            box-shadow: 0 4px 20px var(--border-glow);
+            transform: translateY(-2px);
+        }
+        .question-card.mastered {
+            border-color: #198754;
+            background: linear-gradient(145deg, #13241b, #181c24);
+        }
+        .answer-box {
+            background-color: #0d1117;
+            border-left: 4px solid var(--primary-accent);
+            border-radius: 0.4rem;
+            padding: 1.1rem;
+            margin-top: 1rem;
+        }
+        .keyword-badge {
+            background-color: rgba(13, 202, 240, 0.15);
+            color: #79c0ff;
+            border: 1px solid rgba(13, 202, 240, 0.3);
+            font-size: 0.82rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 50rem;
+            display: inline-block;
+            margin: 0.15rem;
+        }
+        .code-reference {
+            font-family: monospace;
+            background-color: #21262d;
+            color: #ff7b72;
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.3rem;
+            font-size: 0.88rem;
+        }
+        .sim-box {
+            background: linear-gradient(135deg, #1a1e29, #251d38);
+            border: 2px solid var(--secondary-accent);
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(111, 66, 193, 0.3);
+        }
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: monospace;
+            color: var(--primary-accent);
+        }
+        .nav-pills .nav-link {
+            color: #8b949e;
+            border: 1px solid #30363d;
+            margin: 0.25rem;
+            border-radius: 50rem;
+            padding: 0.4rem 1.1rem;
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-accent);
+            color: #000;
+            font-weight: 600;
+            border-color: var(--primary-accent);
+        }
+        .infografia-container {
+            border: 2px solid #30363d;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+        .infografia-container:hover {
+            transform: scale(1.01);
+            border-color: var(--primary-accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+    <!-- Header Hero -->
+    <div class="hero-banner text-center shadow">
+        <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-2 mb-2 rounded-pill">
+            <i class="bi bi-mortarboard-fill me-1"></i> EVALUACIÓN N°1 - DESARROLLO BACKEND
+        </span>
+        <h1 class="display-5 fw-bold text-white mb-2">Simulador de Defensa Oral & Guía de Estudio</h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 850px;">
+            Material de preparación técnica para asegurar los <strong>6 puntos del Criterio 10</strong> con el docente Marcelo Alvarado. Domina cada línea de código, arquitectura y estructura de carpetas.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+            <span class="badge bg-dark border border-secondary px-3 py-2"><i class="bi bi-person-fill text-info me-1"></i> Alumno: Sebastián Torres</span>
+            <span class="badge bg-dark border border-secondary px-3 py-2"><i class="bi bi-award-fill text-warning me-1"></i> Meta: 32 / 32 pts (Nota 7.0)</span>
+            <span class="badge bg-dark border border-secondary px-3 py-2"><i class="bi bi-check2-all text-success me-1"></i> 18 Tests Aprobados</span>
+            <span class="badge bg-dark border border-secondary px-3 py-2"><i class="bi bi-collection-fill text-info me-1"></i> 22 Preguntas Totales</span>
+        </div>
+    </div>
+
+    <!-- Barra de Progreso de Estudio -->
+    <div class="card bg-dark border-secondary p-3 mb-4 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Progreso de Dominio de Preguntas</span>
+            <span class="badge bg-primary" id="progress-text">0 / 22 Preguntas Dominadas (0%)</span>
+        </div>
+        <div class="progress" style="height: 10px;">
+            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Infografía Visual Oficial -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h4 fw-bold text-white mb-0">
+                <i class="bi bi-diagram-3-fill text-info me-2"></i>Esquema Visual de los 4 Pilares Técnicos
+            </h3>
+            <span class="text-secondary small">Haz clic en la imagen para ver en tamaño completo</span>
+        </div>
+        <div class="infografia-container text-center">
+            <a href="infografia_defensa.jpg" target="_blank" title="Ver imagen en tamaño completo">
+                <img src="infografia_defensa.jpg" alt="Infografía Defensa Oral - Django & DRF" class="img-fluid w-100">
+            </a>
+        </div>
+    </div>
+
+    <!-- Simulador de Examen -->
+    <div class="sim-box p-4 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark fw-bold mb-2"><i class="bi bi-lightning-charge-fill me-1"></i>MODO SIMULADOR DE INTERROGACIÓN</span>
+                <h3 class="h4 fw-bold text-white mb-2">Entrena con el Temporizador de Respuesta</h3>
+                <p class="text-light-emphasis mb-3">
+                    Simula la presión real frente al profesor. Genera una pregunta al azar (de teoría, arquitectura o carpetas), activa el cronómetro de 60 segundos y responde en voz alta.
+                </p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-info fw-bold px-4 py-2" onclick="getRandomQuestion()">
+                        <i class="bi bi-shuffle me-2"></i>Lanzar Pregunta Aleatoria
+                    </button>
+                    <button class="btn btn-outline-light px-3 py-2" onclick="toggleAllAnswers(true)">
+                        <i class="bi bi-eye-fill me-1"></i>Mostrar Todas
+                    </button>
+                    <button class="btn btn-outline-secondary px-3 py-2" onclick="toggleAllAnswers(false)">
+                        <i class="bi bi-eye-slash-fill me-1"></i>Ocultar Todas
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center mt-3 mt-lg-0 border-start border-secondary py-2">
+                <div class="text-secondary small text-uppercase fw-bold">Tiempo de Respuesta</div>
+                <div class="timer-display my-1" id="timer">01:00</div>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-sm btn-outline-info" onclick="startTimer()"><i class="bi bi-play-fill"></i> Iniciar</button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="pauseTimer()"><i class="bi bi-pause-fill"></i> Pausar</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="resetTimer()"><i class="bi bi-arrow-clockwise"></i> Reiniciar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="sim-question-container" class="mt-4 p-3 bg-dark rounded border border-info" style="display: none;">
+            <div class="d-flex justify-content-between">
+                <span class="badge bg-danger mb-2" id="sim-badge">PREGUNTA EN CURSO</span>
+                <button class="btn-close btn-close-white" onclick="closeSimQuestion()"></button>
+            </div>
+            <h5 class="fw-bold text-white mb-2" id="sim-title"></h5>
+            <p class="text-light" id="sim-body"></p>
+            <div class="mt-3">
+                <button class="btn btn-sm btn-outline-info" onclick="toggleSimAnswer()">
+                    <i class="bi bi-lightbulb-fill me-1"></i>Ver Respuesta Modelo
+                </button>
+                <div id="sim-answer" class="answer-box mt-3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros de Preguntas -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-2">
+        <h3 class="h4 fw-bold text-white mb-0">
+            <i class="bi bi-collection-fill text-primary me-2"></i>Catálogo de 22 Preguntas de Estudio
+        </h3>
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+            <li class="nav-item"><button class="nav-link active" onclick="filterQuestions('all')">Todas (22)</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('carpetas')">📁 Carpetas & Archivos (10)</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('rubrica')">⭐ Las 4 de la Rúbrica</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('arquitectura')">🏛️ Arquitectura & DRF</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('frontend')">⚡ Asincronía & Fetch</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('database')">🗄️ Modelos & ER</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="filterQuestions('avanzado')">🚀 Testing & Skills</button></li>
+        </ul>
+    </div>
+
+    <!-- Contenedor de Tarjetas de Preguntas -->
+    <div class="row g-4" id="questions-grid">
+
+        <div class="col-lg-6 question-item" data-category="rubrica arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-1">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-warning text-dark fw-bold">⭐ RÚBRICA OFICIAL #1</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(1)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">1. ¿Cómo se articula el patrón MVT de Django con DRF en tu proyecto?</h4>
+                <p class="text-secondary small mb-3">Pregunta de apertura para evaluar conceptos arquitectónicos clave.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Desacoplamiento</span> <span class="keyword-badge">ModelSerializer</span> <span class="keyword-badge">Capa de Serialización</span> <span class="keyword-badge">APIView</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(1)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-1">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/serializers.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-1" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Django utiliza tradicionalmente <strong>MVT (Model-View-Template)</strong>: el <strong>Modelo</strong> maneja la persistencia con el ORM, la <strong>Vista</strong> ejecuta la lógica de negocio y el <strong>Template</strong> maneja la presentación con Bootstrap 5."</p><p class="mb-2">"Con <strong>DRF</strong> introducimos los <strong>Serializadores (`serializers.py`)</strong>. En lugar de solo vistas web que retornan HTML con <code>render()</code>, creamos endpoints basados en <code>APIView</code> que serializan las instancias a <strong>JSON</strong> estándar para consumo asíncrono."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic/views.py y muestra courses_view (HTML) vs CourseListAPIView (DRF).
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="rubrica frontend">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-2">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-warning text-dark fw-bold">⭐ RÚBRICA OFICIAL #2</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(2)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">2. ¿En qué consiste el 'enmascaramiento' y cómo opera `fetch()` en las plantillas?</h4>
+                <p class="text-secondary small mb-3">Requerimiento Técnico 4 y Criterios 4 y 7 de la pauta.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Enmascaramiento de Endpoints</span> <span class="keyword-badge">fetch() Asíncrono</span> <span class="keyword-badge">Manipulación del DOM</span> <span class="keyword-badge">Sin recarga</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(2)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-2">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">courses.html & students.html</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-2" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"El <strong>enmascaramiento</strong> significa que el usuario nunca tipea <code>/api/courses/</code>. Visita URLs amigables como <code>/courses/</code> que entregan una plantilla HTML Bootstrap."</p><p class="mb-2">"En segundo plano, un script con <code>fetch('/api/courses/')</code> y <code>async/await</code> consulta el endpoint, muestra un spinner animado mientras espera, y al recibir HTTP 200 inyecta las filas en el DOM dinámicamente sin recargar la página."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre el inspector (F12) -> Network -> Recarga /courses/ y muestra la petición asíncrona.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="rubrica database">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-warning text-dark fw-bold">⭐ RÚBRICA OFICIAL #3</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(3)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">3. ¿Cómo estructuraste el modelo ER y la relación Muchos a Muchos (N:M)?</h4>
+                <p class="text-secondary small mb-3">Criterio 1 de la pauta sobre modelado y restricciones relacionales.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Tabla Asociativa</span> <span class="keyword-badge">unique_together</span> <span class="keyword-badge">Integridad Referencial</span> <span class="keyword-badge">Clave Compuesta</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(3)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-3">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/models.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-3" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"El modelo tiene 4 entidades: <code>Teacher</code>, <code>Course</code>, <code>Student</code> y <code>StudentCourse</code>. Para vincular un docente a su asignatura, <code>Course</code> tiene una <strong>ForeignKey</strong> directa hacia <code>Teacher</code> (1:N)."</p><p class="mb-2">"Para la relación Muchos a Muchos entre Alumnos y Cursos, creamos <code>StudentCourse</code> como <strong>tabla asociativa</strong> con dos ForeignKeys y la restricción <code>unique_together = (('student', 'course'),)</code> para impedir inscripciones duplicadas a nivel de base de datos."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic/models.py y señala StudentCourse y su unique_together.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="rubrica database arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-warning text-dark fw-bold">⭐ RÚBRICA OFICIAL #4</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(4)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">4. ¿Cómo cumples el Criterio 2: procesar datos JSON sin requerir la base de datos?</h4>
+                <p class="text-secondary small mb-3">La pregunta técnica sobre colecciones en memoria y persistencia dual.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">data_manager.py</span> <span class="keyword-badge">Colecciones en Memoria</span> <span class="keyword-badge">?source=json</span> <span class="keyword-badge">Soporte Dual</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(4)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-4">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/data_manager.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-4" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Implementamos <code>academic/data_manager.py</code>, que lee y carga <code>academic_data.json</code> en listas y diccionarios de Python en memoria al arrancar."</p><p class="mb-2">"Nuestras <code>APIView</code> verifican si SQLite tiene registros; si la BD está vacía o si se pasa <code>?source=json</code> en la URL, la API despacha los datos directamente desde memoria con los mismos serializadores, cumpliendo 100% el Indicador 2 sin depender de SQLite."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre http://127.0.0.1:8000/api/courses/?source=json en el navegador.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-5">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #5</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(5)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">5. ¿Qué diferencia hay entre `Serializer` y `ModelSerializer` en DRF?</h4>
+                <p class="text-secondary small mb-3">Pregunta para medir conocimiento real de Django REST Framework.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">ModelSerializer</span> <span class="keyword-badge">SerializerMethodField</span> <span class="keyword-badge">Mapeo Automático</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(5)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-5">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/serializers.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-5" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Un <code>Serializer</code> básico obliga a declarar a mano cada campo, validador y métodos <code>create/update</code>. <code>ModelSerializer</code> es una clase que inspecciona el modelo de Django y genera los campos y validaciones automáticamente."</p><p class="mb-2">"En nuestro proyecto usamos <code>ModelSerializer</code> y añadimos <code>SerializerMethodField</code> para calcular datos dinámicos, como el nombre del docente en el serializador de cursos."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic/serializers.py y muestra CourseSerializer.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="database">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-6">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #6</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(6)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">6. ¿Por qué `teacher_id` va en `Course` y qué hace `on_delete=models.CASCADE`?</h4>
+                <p class="text-secondary small mb-3">Pregunta de bases de datos relacionales y comportamiento del ORM.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Lado N de la relación</span> <span class="keyword-badge">Eliminación en Cascada</span> <span class="keyword-badge">Integridad Referencial</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(6)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-6">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/models.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-6" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"La relación es 1:N (un profesor imparte muchos cursos, pero un curso tiene un docente titular). En diseño relacional, la ForeignKey siempre reside en la tabla del lado 'N' (los Cursos)."</p><p class="mb-2">"<code>CASCADE</code> asegura la integridad referencial: si un Docente es eliminado de la base de datos, se eliminan en cascada sus cursos asignados para evitar registros huérfanos."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic/models.py en la clase Course.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="frontend">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-7">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #7</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(7)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">7. ¿Cómo controlas los estados de carga y errores en el `fetch()`?</h4>
+                <p class="text-secondary small mb-3">Evaluación de experiencia de usuario (UI/UX) y robustez.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">try/catch</span> <span class="keyword-badge">Spinner Bootstrap</span> <span class="keyword-badge">response.ok</span> <span class="keyword-badge">Alerta de Error</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(7)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-7">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">courses.html & students.html</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-7" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Envolvemos el <code>fetch()</code> en un bloque <code>try ... catch</code>. Al iniciar la llamada mostramos un spinner de carga animado y ocultamos la tabla."</p><p class="mb-2">"Comprobamos <code>if (!response.ok) throw new Error(...)</code>. Si la promesa se cumple, ocultamos el spinner y creamos las filas. Si hay error en la red o servidor, el <code>catch</code> renderiza un <code>alert alert-danger</code> amigable, impidiendo pantallas en blanco."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra el bloque try/catch en courses.html.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="avanzado arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-8">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #8</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(8)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">8. ¿Cómo funciona tu comando CLI `seed_data` y por qué es una buena práctica?</h4>
+                <p class="text-secondary small mb-3">Diferenciador de calidad profesional frente al resto del curso.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">BaseCommand</span> <span class="keyword-badge">management/commands</span> <span class="keyword-badge">Poblamiento Automatizado</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(8)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-8">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/management/commands/seed_data.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-8" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Creamos el script en la ruta convencional de Django heredando de <code>BaseCommand</code> e implementando <code>handle()</code>."</p><p class="mb-2">"El comando lee <code>academic_data.json</code> e inserta sin duplicados los 5 docentes, 6 cursos, 8 alumnos y 12 inscripciones. Permite que cualquier evaluador clone el proyecto y pueble la BD en 1 segundo con: <code>python manage.py seed_data</code>."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Corre python manage.py seed_data en la terminal.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-9">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #9</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(9)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">9. ¿Cómo eliminaste el error 404 en la ruta raíz `/` de Django?</h4>
+                <p class="text-secondary small mb-3">Requerimiento Técnico 4 explícito en la página 3 de la pauta.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">RedirectView</span> <span class="keyword-badge">Redirección HTTP 302</span> <span class="keyword-badge">urls.py raíz</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(9)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-9">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic_project/urls.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-9" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Por defecto, Django no asigna vista a la raíz <code>''</code> y arroja error 404."</p><p class="mb-2">"En <code>academic_project/urls.py</code> mapeamos la ruta raíz con una redirección hacia <code>/courses/</code>. Cuando el usuario o el docente entra a <code>http://127.0.0.1:8000/</code>, el servidor responde con una redirección automática al panel de asignaturas, eliminando el 404 de inmediato."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra la redirección en academic_project/urls.py.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="avanzado">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-10">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #10</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(10)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">10. ¿Qué diferencia hay entre `TestCase` y `APITestCase` en tus 18 pruebas?</h4>
+                <p class="text-secondary small mb-3">Demuestra que no solo corriste los tests, sino que comprendes el código de pruebas.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">TestCase (ORM)</span> <span class="keyword-badge">APITestCase (DRF Client)</span> <span class="keyword-badge">status.HTTP_200_OK</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(10)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-10">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/tests.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-10" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"<code>TestCase</code> es la clase nativa de Django que aísla pruebas en una BD temporal con rollback automático, ideal para testear modelos y relaciones ORM."</p><p class="mb-2">"<code>APITestCase</code> proviene de DRF y provee un cliente HTTP que simula llamadas REST, evalúa códigos de estado HTTP (200, 404) y valida la estructura de los payloads JSON."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra las dos clases de test en academic/tests.py.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="avanzado">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-11">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #11</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(11)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">11. ¿Qué es eso de los 'Skills' que mencionas en el README y prompts?</h4>
+                <p class="text-secondary small mb-3">La pregunta clave para deslumbrarlo con tu uso de Inteligencia Artificial.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Skills de Ingeniería</span> <span class="keyword-badge">Desarrollo Guiado por Agentes</span> <span class="keyword-badge">Criterio 8 Rúbrica</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(11)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-11">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">prompts & skills.md</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-11" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Para cumplir con el <strong>Criterio 8 de uso eficaz de IA</strong>, no improvisé prompts básicos; apliqué un compendio estandarizado de habilidades de ingeniería (Skills) del repositorio <code>garri333/Skills.git</code>."</p><p class="mb-2">"Modularizamos roles: <code>api-design</code> para estructurar DRF, <code>uiux-pro</code> para la reactividad de Bootstrap con spinners y <code>systematic-debugging</code> para asegurar los 18 tests. Demuestra el uso de IA como un copiloto metodológico y no como un simple atajo."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra prompts & skills.md en tu editor.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="avanzado">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-12">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info">AVANZADA #12</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(12)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">12. ¿Por qué es fundamental el `.gitignore` y qué excluiste en él?</h4>
+                <p class="text-secondary small mb-3">Criterio 9 de la rúbrica sobre buenas prácticas en Git y GitHub.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">__pycache__ y *.pyc</span> <span class="keyword-badge">Entorno Virtual (env/)</span> <span class="keyword-badge">Buenas Prácticas Git</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(12)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-12">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">.gitignore</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-12" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2">"Un <code>.gitignore</code> previene subir al repositorio archivos compilados o dependencias pesadas que ensucian el historial de Git."</p><p class="mb-2">"Excluimos el bytecode de Python (<code>__pycache__/</code>), la carpeta del entorno virtual (<code>env/</code>) para forzar la instalación limpia con <code>requirements.txt</code>, y temporales del sistema operativo (<code>.DS_Store</code>, <code>Thumbs.db</code>)."</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre el archivo .gitignore en la raíz.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas arquitectura">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-13">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #1</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(13)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">13. 🏛️ ¿Para qué sirve la carpeta `academic_project/`?</h4>
+                <p class="text-secondary small mb-3">El cerebro y panel de control central de todo el proyecto Django.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">settings.py</span> <span class="keyword-badge">urls.py maestro</span> <span class="keyword-badge">Cerebro del Proyecto</span> <span class="keyword-badge">Redirección 404</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(13)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-13">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic_project/</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-13" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> Es el <strong>cerebro y panel de control central</strong> de todo el proyecto Django.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Aloja <code>settings.py</code> (donde registramos DRF y la app academic) y el enrutador maestro <code>urls.py</code> que redirige la raíz <code>/</code> a <code>/courses/</code> para matar el error 404.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es la <em>oficina de rectoría</em>: no hace clases, pero fija las reglas y conexiones de todo el colegio.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic_project/settings.py y urls.py.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-14">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #2</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(14)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">14. 🎓 ¿Para qué sirve la carpeta `academic/`?</h4>
+                <p class="text-secondary small mb-3">La aplicación de dominio donde vive toda la lógica del negocio.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">models.py</span> <span class="keyword-badge">serializers.py</span> <span class="keyword-badge">views.py</span> <span class="keyword-badge">tests.py</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(14)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-14">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-14" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> Es la <strong>aplicación de negocio principal</strong> (Django App).</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Contiene todo el código del sistema: las tablas de la BD (<code>models.py</code>), los serializadores de DRF (<code>serializers.py</code>), las vistas HTML y endpoints (<code>views.py</code>) y los 18 tests (<code>tests.py</code>).</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es la <em>sala de clases</em>: donde ocurre toda la acción académica real.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra los archivos clave dentro de academic/.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas frontend">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-15">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #3</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(15)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">15. 🎨 ¿Para qué sirve la carpeta `templates/` (y `academic/templates/`)?</h4>
+                <p class="text-secondary small mb-3">La capa de presentación visual (HTML, Bootstrap 5 y JavaScript).</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">base.html</span> <span class="keyword-badge">courses.html</span> <span class="keyword-badge">students.html</span> <span class="keyword-badge">Bootstrap 5</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(15)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-15">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">templates/academic/</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-15" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> Es la <strong>fachada visual y presentación web</strong> de la aplicación.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Guarda las plantillas HTML estilizadas con Bootstrap 5 (<code>base.html</code>, <code>courses.html</code>, <code>students.html</code>) y los scripts de JavaScript que hacen las peticiones <code>fetch()</code> asíncronas.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es la <em>vitrina del edificio</em>: lo que el usuario ve, toca y disfruta en su pantalla.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre templates/academic/base.html.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-16">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #4</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(16)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">16. 📦 ¿Para qué sirve la carpeta `academic/data/` (con `academic_data.json`)?</h4>
+                <p class="text-secondary small mb-3">El almacén de datos de prueba simulados en formato JSON.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">academic_data.json</span> <span class="keyword-badge">Criterio 2</span> <span class="keyword-badge">Datos en Memoria</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(16)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-16">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/data/academic_data.json</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-16" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> El <strong>cajón de datos simulados en formato JSON</strong>.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Guarda el dataset en JSON estructurado requerido por la pauta. Sirve para alimentar la aplicación en memoria sin base de datos (Criterio 2) o para poblar SQLite con el comando seed_data.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es una <em>carpeta de fichas en papel de respaldo</em>: si la base de datos se apaga, sacas las fichas y sigues atendiendo.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre academic/data/academic_data.json en tu editor.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-17">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #5</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(17)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">17. ⚡ ¿Para qué sirve la carpeta `academic/management/commands/`?</h4>
+                <p class="text-secondary small mb-3">La fábrica de comandos CLI propios para la consola de Django.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">seed_data.py</span> <span class="keyword-badge">python manage.py seed_data</span> <span class="keyword-badge">BaseCommand</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(17)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-17">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/management/commands/</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-17" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> La fábrica de <strong>comandos personalizados de consola</strong> para Django.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Aloja <code>seed_data.py</code>. Permite que el profesor o evaluador escriba <code>python manage.py seed_data</code> y pueble 5 docentes, 6 cursos, 8 alumnos y 12 inscripciones en 1 segundo.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es el <em>botón de piloto automático</em>: en vez de ingresar filas una por una a mano, tocas un botón y se llena todo solo.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra el comando seed_data.py en el editor.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas database">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-18">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📁 CARPETA #6</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(18)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">18. 🔄 ¿Para qué sirve la carpeta `academic/migrations/`?</h4>
+                <p class="text-secondary small mb-3">El historial de versiones y planos de construcción de la base de datos.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">0001_initial.py</span> <span class="keyword-badge">makemigrations</span> <span class="keyword-badge">migrate</span> <span class="keyword-badge">Historial SQL</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(18)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-18">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">academic/migrations/</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-18" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> El <strong>libro de actas y planos</strong> de la base de datos.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Registra cómo se traducen las clases de Python de <code>models.py</code> en instrucciones de tablas SQL (en <code>0001_initial.py</code>). Cada vez que modificas un modelo, aquí queda guardado el historial de cambios.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Son los <em>planos del arquitecto</em>: le dicen al albañil (SQLite) exactamente dónde construir las paredes y columnas.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra academic/migrations/0001_initial.py.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-19">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📄 ARCHIVO #7</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(19)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">19. 🕹️ ¿Para qué sirve el archivo `manage.py`?</h4>
+                <p class="text-secondary small mb-3">El script de ejecución y control remoto principal de Django.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">runserver</span> <span class="keyword-badge">migrate</span> <span class="keyword-badge">test</span> <span class="keyword-badge">seed_data</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(19)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-19">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">manage.py</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-19" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> El <strong>control remoto principal</strong> de Django.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Es el script ejecutable que usamos en la terminal para arrancar el servidor (<code>runserver</code>), aplicar migraciones (<code>migrate</code>), correr los 18 tests (<code>test</code>) o poblar datos (<code>seed_data</code>).</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es la <em>llave del auto</em>: sin ella no puedes encender el motor de Django ni manejar la aplicación.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Ejecuta python manage.py en la terminal para mostrar la lista de comandos.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas database">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-20">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📄 ARCHIVO #8</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(20)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">20. 🗄️ ¿Para qué sirve el archivo `db.sqlite3`?</h4>
+                <p class="text-secondary small mb-3">El contenedor físico local de la base de datos relacional.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">SQLite</span> <span class="keyword-badge">Base de Datos Relacional</span> <span class="keyword-badge">Tablas Físicas</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(20)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-20">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">db.sqlite3</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-20" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> El <strong>disco duro o almacén físico</strong> de la base de datos relacional.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Es el archivo donde SQLite guarda físicamente las tablas relacionales (<code>teacher</code>, <code>course</code>, <code>student</code>, <code>student_course</code>) y todos los registros ingresados.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es el <em>archivador metálico</em>: el lugar físico donde reposan todas las carpetas con los datos guardados.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Muestra el archivo db.sqlite3 en el Explorador de Windows.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-21">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📄 ARCHIVO #9</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(21)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">21. 📋 ¿Para qué sirve el archivo `requirements.txt`?</h4>
+                <p class="text-secondary small mb-3">La lista de dependencias y librerías externas del proyecto.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">Django</span> <span class="keyword-badge">djangorestframework</span> <span class="keyword-badge">pip install -r</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(21)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-21">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">requirements.txt</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-21" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> La <strong>lista de ingredientes e inventario</strong> de librerías externas.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Declara las versiones exactas de <code>Django</code> y <code>djangorestframework</code> para que cualquier desarrollador pueda instalar el entorno en 1 comando: <code>pip install -r requirements.txt</code>.</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es la <em>receta de cocina</em>: te dice los ingredientes exactos que necesitas comprar para preparar el plato.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre requirements.txt en el editor.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-lg-6 question-item" data-category="carpetas">
+            <div class="question-card p-4 h-100 shadow-sm" id="card-22">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success">📄 ARCHIVO #10</span>
+                    <button class="btn btn-sm btn-outline-success master-btn" onclick="toggleMaster(22)">
+                        <i class="bi bi-check-circle me-1"></i>Marcar Dominada
+                    </button>
+                </div>
+                <h4 class="h5 fw-bold text-white mb-2">22. 🙈 ¿Para qué sirve el archivo `.gitignore`?</h4>
+                <p class="text-secondary small mb-3">El filtro de exclusión de seguridad y limpieza para Git.</p>
+                <div class="mb-3">
+                    <div class="text-secondary small text-uppercase fw-bold mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Palabras clave:</div>
+                    <span class="keyword-badge">__pycache__</span> <span class="keyword-badge">env/</span> <span class="keyword-badge">Control de Versiones</span> <span class="keyword-badge">Git</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleAnswer(22)">
+                        <i class="bi bi-eye me-1"></i><span id="btn-text-22">Ver Respuesta en 30s</span>
+                    </button>
+                    <span class="code-reference">.gitignore</span>
+                </div>
+                <div class="answer-box mt-3" id="answer-22" style="display: none;">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-chat-quote-fill me-2"></i>Tu respuesta exacta frente al profesor:</h6>
+                    <p class="mb-2"><strong>¿Qué es?</strong> El <strong>filtro de exclusión inteligente</strong> para Git.</p><p class="mb-2"><strong>¿Para qué sirve?</strong> Le ordena a Git que nunca suba a GitHub cosas pesadas o temporales innecesarias, como las carpetas de caché (<code>__pycache__/</code>) o el entorno virtual (<code>env/</code>).</p><p class="mb-0 text-info"><strong>💡 Metáfora:</strong> Es el <em>guardia de seguridad</em>: revisa qué cosas entran al camión de mudanza (GitHub) y deja afuera la basura que solo ocupa espacio.</p>
+                    <div class="p-2 bg-dark rounded border border-secondary mt-2 small text-secondary">
+                        <strong class="text-warning"><i class="bi bi-mouse-fill me-1"></i>Qué mostrar en tu PC:</strong> Abre el archivo .gitignore en la raíz.
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-5 text-secondary small border-top border-secondary pt-4">
+        <p class="mb-1">Sistema de Gestión Académica - Evaluación N°1 Backend (Django & DRF)</p>
+        <p class="mb-0">Generado para la preparación de <strong>Sebastián Torres</strong> | 32/32 Puntos (Nota 7.0)</p>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script>
+    const questionsPool = [{"id": 1, "title": "1. ¿Cómo se articula el patrón MVT de Django con DRF en tu proyecto?", "category": "⭐ RÚBRICA OFICIAL #1"}, {"id": 2, "title": "2. ¿En qué consiste el 'enmascaramiento' y cómo opera `fetch()` en las plantillas?", "category": "⭐ RÚBRICA OFICIAL #2"}, {"id": 3, "title": "3. ¿Cómo estructuraste el modelo ER y la relación Muchos a Muchos (N:M)?", "category": "⭐ RÚBRICA OFICIAL #3"}, {"id": 4, "title": "4. ¿Cómo cumples el Criterio 2: procesar datos JSON sin requerir la base de datos?", "category": "⭐ RÚBRICA OFICIAL #4"}, {"id": 5, "title": "5. ¿Qué diferencia hay entre `Serializer` y `ModelSerializer` en DRF?", "category": "AVANZADA #5"}, {"id": 6, "title": "6. ¿Por qué `teacher_id` va en `Course` y qué hace `on_delete=models.CASCADE`?", "category": "AVANZADA #6"}, {"id": 7, "title": "7. ¿Cómo controlas los estados de carga y errores en el `fetch()`?", "category": "AVANZADA #7"}, {"id": 8, "title": "8. ¿Cómo funciona tu comando CLI `seed_data` y por qué es una buena práctica?", "category": "AVANZADA #8"}, {"id": 9, "title": "9. ¿Cómo eliminaste el error 404 en la ruta raíz `/` de Django?", "category": "AVANZADA #9"}, {"id": 10, "title": "10. ¿Qué diferencia hay entre `TestCase` y `APITestCase` en tus 18 pruebas?", "category": "AVANZADA #10"}, {"id": 11, "title": "11. ¿Qué es eso de los 'Skills' que mencionas en el README y prompts?", "category": "AVANZADA #11"}, {"id": 12, "title": "12. ¿Por qué es fundamental el `.gitignore` y qué excluiste en él?", "category": "AVANZADA #12"}, {"id": 13, "title": "13. 🏛️ ¿Para qué sirve la carpeta `academic_project/`?", "category": "📁 CARPETA #1"}, {"id": 14, "title": "14. 🎓 ¿Para qué sirve la carpeta `academic/`?", "category": "📁 CARPETA #2"}, {"id": 15, "title": "15. 🎨 ¿Para qué sirve la carpeta `templates/` (y `academic/templates/`)?", "category": "📁 CARPETA #3"}, {"id": 16, "title": "16. 📦 ¿Para qué sirve la carpeta `academic/data/` (con `academic_data.json`)?", "category": "📁 CARPETA #4"}, {"id": 17, "title": "17. ⚡ ¿Para qué sirve la carpeta `academic/management/commands/`?", "category": "📁 CARPETA #5"}, {"id": 18, "title": "18. 🔄 ¿Para qué sirve la carpeta `academic/migrations/`?", "category": "📁 CARPETA #6"}, {"id": 19, "title": "19. 🕹️ ¿Para qué sirve el archivo `manage.py`?", "category": "📄 ARCHIVO #7"}, {"id": 20, "title": "20. 🗄️ ¿Para qué sirve el archivo `db.sqlite3`?", "category": "📄 ARCHIVO #8"}, {"id": 21, "title": "21. 📋 ¿Para qué sirve el archivo `requirements.txt`?", "category": "📄 ARCHIVO #9"}, {"id": 22, "title": "22. 🙈 ¿Para qué sirve el archivo `.gitignore`?", "category": "📄 ARCHIVO #10"}];
+
+    function toggleAnswer(id) {
+        const box = document.getElementById(`answer-${id}`);
+        const text = document.getElementById(`btn-text-${id}`);
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+            text.textContent = 'Ocultar Respuesta';
+        } else {
+            box.style.display = 'none';
+            text.textContent = 'Ver Respuesta en 30s';
+        }
+    }
+
+    function toggleAllAnswers(show) {
+        questionsPool.forEach(q => {
+            const box = document.getElementById(`answer-${q.id}`);
+            const text = document.getElementById(`btn-text-${q.id}`);
+            if (box && text) {
+                box.style.display = show ? 'block' : 'none';
+                text.textContent = show ? 'Ocultar Respuesta' : 'Ver Respuesta en 30s';
+            }
+        });
+    }
+
+    function filterQuestions(cat) {
+        document.querySelectorAll('#pills-tab .nav-link').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const items = document.querySelectorAll('.question-item');
+        items.forEach(item => {
+            if (cat === 'all') {
+                item.style.display = 'block';
+            } else {
+                const cats = item.getAttribute('data-category');
+                item.style.display = cats.includes(cat) ? 'block' : 'none';
+            }
+        });
+    }
+
+    const masteredState = {};
+    function toggleMaster(id) {
+        masteredState[id] = !masteredState[id];
+        const card = document.getElementById(`card-${id}`);
+        const btn = card.querySelector('.master-btn');
+
+        if (masteredState[id]) {
+            card.classList.add('mastered');
+            btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>¡Dominada!';
+            btn.classList.remove('btn-outline-success');
+            btn.classList.add('btn-success');
+        } else {
+            card.classList.remove('mastered');
+            btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Marcar Dominada';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-success');
+        }
+        updateProgressBar();
+    }
+
+    function updateProgressBar() {
+        const count = Object.values(masteredState).filter(Boolean).length;
+        const total = questionsPool.length;
+        const percent = Math.round((count / total) * 100);
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+        document.getElementById('progress-text').textContent = `${count} / ${total} Preguntas Dominadas (${percent}%)`;
+    }
+
+    let currentSimId = null;
+    function getRandomQuestion() {
+        const randomIndex = Math.floor(Math.random() * questionsPool.length);
+        const q = questionsPool[randomIndex];
+        currentSimId = q.id;
+
+        document.getElementById('sim-badge').textContent = q.category;
+        document.getElementById('sim-title').textContent = q.title;
+        document.getElementById('sim-body').textContent = "Tienes 60 segundos para responder en voz alta como si estuvieras frente al docente Marcelo Alvarado. ¡Empieza ahora!";
+
+        const originalAnswer = document.getElementById(`answer-${q.id}`).innerHTML;
+        document.getElementById('sim-answer').innerHTML = originalAnswer;
+        document.getElementById('sim-answer').style.display = 'none';
+
+        document.getElementById('sim-question-container').style.display = 'block';
+        resetTimer();
+        startTimer();
+
+        document.getElementById('sim-question-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function toggleSimAnswer() {
+        const ans = document.getElementById('sim-answer');
+        ans.style.display = (ans.style.display === 'none') ? 'block' : 'none';
+    }
+
+    function closeSimQuestion() {
+        document.getElementById('sim-question-container').style.display = 'none';
+        pauseTimer();
+    }
+
+    let timerSeconds = 60;
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+        const secs = (timerSeconds % 60).toString().padStart(2, '0');
+        const el = document.getElementById('timer');
+        el.textContent = `${mins}:${secs}`;
+        el.style.color = (timerSeconds <= 10) ? '#dc3545' : '#0dcaf0';
+    }
+
+    function startTimer() {
+        if (timerInterval) return;
+        timerInterval = setInterval(() => {
+            if (timerSeconds > 0) {
+                timerSeconds--;
+                updateTimerDisplay();
+            } else {
+                pauseTimer();
+                alert('¡Tiempo cumplido! Revisa tu respuesta modelo para contrastar lo que respondiste.');
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        timerSeconds = 60;
+        updateTimerDisplay();
+    }
+</script>
+</body>
+</html>

@@ -12,6 +12,16 @@
 **Ponderación:** 15% de la nota final  
 **Modalidad:** Individual con Escala de Apreciación (Tiempo: 90 minutos)  
 
+[![Simulador](https://img.shields.io/badge/🎮_Simulador-Defensa_Oral_Interactivo-8A2BE2?style=for-the-badge&logo=googlechrome&logoColor=white)](guia_estudio_defensa.html)
+[![Demo Online](https://img.shields.io/badge/🚀_Demo_Online-Abrir_en_Navegador-00CED1?style=for-the-badge)](guia_estudio_defensa.html)
+
+> [!IMPORTANT]
+> ### 🎮 Plataforma Interactiva de Defensa Oral & Simulador (Criterio 10)
+> Para entrenar o evaluar en tiempo real las competencias técnicas del proyecto:
+> - **🖥️ En local:** Haz doble clic en el archivo [`guia_estudio_defensa.html`](./guia_estudio_defensa.html) para abrir el simulador en tu navegador.
+> - **🌐 Vista en vivo online:** Puedes abrirlo directamente en la web con [HTMLPreview](https://htmlpreview.github.io/?https://github.com/TU_USUARIO/Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf/blob/main/guia_estudio_defensa.html) o GitHub Pages sin necesidad de instalar nada.
+> - **Contenido interactivo:** Infografía visual de arquitectura, temporizador de 60s, banco de 22 preguntas con respuestas modelo y 10 preguntas de carpetas con metáforas de la vida real.
+
 ---
 
 ## Tabla de Contenidos
@@ -180,7 +190,10 @@ Sistema-de-Gesti-n-Acad-mica--academic-system-django-drf-main/
 │       ├── courses.html               # Vista de cursos
 │       └── students.html              # Vista de estudiantes
 │
+├── .gitignore                         # Reglas de exclusión de archivos temporales para Git
 ├── db.sqlite3                         # Base de datos relacional SQLite preconfigurada
+├── guia_estudio_defensa.html          # Panel interactivo de estudio y simulador de interrogación
+├── infografia_defensa.jpg             # Infografía técnica con los 4 pilares de arquitectura
 ├── manage.py                          # Script principal de administración de Django
 ├── prompts & skills.md                # Registro de skills aplicadas, repo de origen y prompts
 ├── prompts.md                         # Entregable de IA (Criterio 8 de la rúbrica)
@@ -357,6 +370,10 @@ git push -u origin main
 ## 10. Balotario de Preparación para la Interrogación Oral
 
 *(Guía para asegurar los **6 puntos** del Criterio 10 respondiendo con solidez técnica ante el docente)*
+
+> [!TIP]
+> **🎮 ¿Quieres entrenar con el simulador interactivo, preguntas aleatorias y cuenta regresiva de 60s?**  
+> Abre el archivo [`guia_estudio_defensa.html`](./guia_estudio_defensa.html) en tu navegador para poner a prueba tus conocimientos en tiempo real con el banco completo de 22 preguntas.
 
 ### Pregunta 1: ¿Cómo opera el patrón arquitectónico de Django y cómo se integra Django REST Framework (DRF) en este proyecto?
 > **Respuesta Clave:**  
